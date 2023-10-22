@@ -12,9 +12,23 @@ const App = () => {
     'The only way to go fast, is to go well.',
   ];
 
+  function getRandomIntInclusive(min, max) {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+
+  function handleNextAnecdote() {
+    const anecdoteIndex = getRandomIntInclusive(0, anecdotes.length - 1);
+    setSelected(anecdoteIndex);
+  }
+
   const [selected, setSelected] = useState(0);
 
-  return <div>{anecdotes[selected]}</div>;
+  return (
+    <>
+      <div>{anecdotes[selected]}</div>
+      <button onClick={handleNextAnecdote}>next anecdote</button>
+    </>
+  );
 };
 
 export default App;
