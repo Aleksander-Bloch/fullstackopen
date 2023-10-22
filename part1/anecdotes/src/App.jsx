@@ -21,11 +21,20 @@ const App = () => {
     setSelected(anecdoteIndex);
   }
 
+  function handleVote() {
+    const nextVotes = [...votes];
+    nextVotes[selected]++;
+    setVotes(nextVotes);
+  }
+
   const [selected, setSelected] = useState(0);
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0));
 
   return (
     <>
       <div>{anecdotes[selected]}</div>
+      <div>has {votes[selected]} votes</div>
+      <button onClick={handleVote}>vote</button>
       <button onClick={handleNextAnecdote}>next anecdote</button>
     </>
   );
