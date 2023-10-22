@@ -30,14 +30,37 @@ const App = () => {
   const [selected, setSelected] = useState(0);
   const [votes, setVotes] = useState(Array(anecdotes.length).fill(0));
 
+  const mostVotesIndex = votes.reduce(
+    (prevMostVotesIndex, curVotes, curIndex) =>
+      curVotes > votes[prevMostVotesIndex] ? curIndex : prevMostVotesIndex,
+    0
+  );
+
   return (
     <>
-      <div>{anecdotes[selected]}</div>
-      <div>has {votes[selected]} votes</div>
+      <h1>Anecdotes App</h1>
+      <Anecdote
+        title="Anecdote of the day"
+        content={anecdotes[selected]}
+        numVotes={votes[selected]}
+      />
       <button onClick={handleVote}>vote</button>
       <button onClick={handleNextAnecdote}>next anecdote</button>
+      <Anecdote
+        title="Anecdote with most votes"
+        content={anecdotes[mostVotesIndex]}
+        numVotes={votes[mostVotesIndex]}
+      />
     </>
   );
 };
+
+const Anecdote = ({ title, content, numVotes }) => (
+  <>
+    <h2>{title}</h2>
+    <div>{content}</div>
+    <div>has {numVotes} votes</div>
+  </>
+);
 
 export default App;
