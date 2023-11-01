@@ -34,12 +34,26 @@ const App = () => {
       number: newNumber,
     };
 
-    personsService.create(newPerson).then(createdId => {
-      newPerson.id = createdId;
-      setPersons(persons.concat(newPerson));
-      setNewName('');
-      setNewNumber('');
-    });
+    personsService
+      .create(newPerson)
+      .then(createdId => {
+        newPerson.id = createdId;
+        setPersons(persons.concat(newPerson));
+        setNewName('');
+        setNewNumber('');
+      })
+      .catch(error => console.log(error));
+  };
+
+  const handleDeletePerson = deletedPerson => {
+    if (!window.confirm(`Delete ${deletedPerson.name}?`)) return;
+
+    personsService
+      .remove(deletedPerson.id)
+      .then(() => {
+        setPersons(persons.filter(person => person.id !== deletedPerson.id));
+      })
+      .catch(error => console.log(error));
   };
 
   const lowerCaseNameFilter = nameFilter.toLowerCase();
@@ -67,7 +81,7 @@ const App = () => {
         onNumberChange={handleNumberChange}
       />
       <h2>Numbers</h2>
-      <Persons persons={filteredPersons} />
+      <Persons persons={filteredPersons} onDeletePerson={handleDeletePerson} />
     </div>
   );
 };
