@@ -24,25 +24,43 @@ const App = () => {
 
   const handleAddNewPerson = event => {
     event.preventDefault();
-    if (persons.find(person => person.name === newName)) {
-      alert(`${newName} is already added to phonebook`);
-      return;
+    const personIndex = persons.findIndex(person => person.name === newName);
+    if (personIndex === -1) {
+      const newPerson = {
+        name: newName,
+        number: newNumber,
+      };
+
+      personsService
+        .create(newPerson)
+        .then(createdId => {
+          newPerson.id = createdId;
+          setPersons(persons.concat(newPerson));
+          setNewName('');
+          setNewNumber('');
+        })
+        .catch(error => console.log(error));
+    } else {
+      const foundPerson = persons[personIndex];
+      const wantsToUpdate = window.confirm(
+        `${foundPerson.name} is already added to phonebook, replace the old number with a new one?`
+      );
+      if (!wantsToUpdate) return;
+      const updatedPerson = { ...foundPerson, number: newNumber };
+
+      personsService
+        .update(foundPerson.id, updatedPerson)
+        .then(() => {
+          setPersons(
+            persons.map(person =>
+              person.id === foundPerson.id ? updatedPerson : person
+            )
+          );
+          setNewName('');
+          setNewNumber('');
+        })
+        .catch(error => console.log(error));
     }
-
-    const newPerson = {
-      name: newName,
-      number: newNumber,
-    };
-
-    personsService
-      .create(newPerson)
-      .then(createdId => {
-        newPerson.id = createdId;
-        setPersons(persons.concat(newPerson));
-        setNewName('');
-        setNewNumber('');
-      })
-      .catch(error => console.log(error));
   };
 
   const handleDeletePerson = deletedPerson => {
