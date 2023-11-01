@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import Filter from './Filter';
-import PersonForm from './PersonForm';
-import Persons from './Persons';
+import Filter from './components/Filter';
+import PersonForm from './components/PersonForm';
+import Persons from './components/Persons';
 import axios from 'axios';
 
 const App = () => {
@@ -10,21 +10,21 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('');
   const [nameFilter, setNameFilter] = useState('');
 
-  const handleNameChange = (event) => {
+  const handleNameChange = event => {
     setNewName(event.target.value);
   };
 
-  const handleNumberChange = (event) => {
+  const handleNumberChange = event => {
     setNewNumber(event.target.value);
   };
 
-  const handleNameFilterChange = (event) => {
+  const handleNameFilterChange = event => {
     setNameFilter(event.target.value);
   };
 
-  const handleAddNewPerson = (event) => {
+  const handleAddNewPerson = event => {
     event.preventDefault();
-    if (persons.find((person) => person.name === newName)) {
+    if (persons.find(person => person.name === newName)) {
       alert(`${newName} is already added to phonebook`);
       return;
     }
@@ -32,23 +32,25 @@ const App = () => {
     const newPerson = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1,
     };
-    setPersons(persons.concat(newPerson));
 
-    setNewName('');
-    setNewNumber('');
+    axios.post('http://localhost:3001/persons', newPerson).then(response => {
+      newPerson.id = response.data.id;
+      setPersons(persons.concat(newPerson));
+      setNewName('');
+      setNewNumber('');
+    });
   };
 
   const lowerCaseNameFilter = nameFilter.toLowerCase();
-  const filteredPersons = persons.filter((person) =>
+  const filteredPersons = persons.filter(person =>
     person.name.toLowerCase().includes(lowerCaseNameFilter)
   );
 
   useEffect(() => {
     axios
       .get('http://localhost:3001/persons')
-      .then((response) => setPersons(response.data));
+      .then(response => setPersons(response.data));
   }, []);
 
   return (
