@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import CountryData from './components/CountryData';
 import ShowCountryData from './components/ShowCountryData';
+import WeatherData from './components/WeatherData';
 
 function App() {
   const [countryQuery, setCountryQuery] = useState('');
@@ -19,7 +20,12 @@ function App() {
 
     if (numOfFilteredCountries === 1) {
       const singleCountry = filteredCountries[0];
-      return <CountryData country={singleCountry} />;
+      return (
+        <div>
+          <CountryData country={singleCountry} />
+          <WeatherData capital={singleCountry.capital[0]} />
+        </div>
+      );
     } else if (numOfFilteredCountries >= 2 && numOfFilteredCountries <= 10) {
       return filteredCountries.map(country => (
         <ShowCountryData key={country.name.common} country={country} />
